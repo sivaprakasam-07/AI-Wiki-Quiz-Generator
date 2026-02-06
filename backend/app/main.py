@@ -48,7 +48,7 @@ def generate_quiz(request: QuizRequest, db: Session = Depends(get_db)):
     if cached_result and not request.force:
         return cached_result
 
-    existing = get_quiz_by_url(db, request.url)
+    existing = get_quiz_by_url(db, str(request.url))
     if existing and not request.force:
         # Store in cache for next request
         quiz_cache.set(cache_key, existing)
