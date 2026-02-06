@@ -10,10 +10,11 @@ class Base(DeclarativeBase):
 
 
 def get_database_url() -> str:
-    db_url = os.getenv("DB_URL")
+    db_url = os.getenv("DATABASE_URL")
     if not db_url:
-        raise RuntimeError("DB_URL is not set. Configure it in your environment.")
+        raise RuntimeError("DATABASE_URL is not set.")
     return db_url
+
 
 
 def get_engine():
