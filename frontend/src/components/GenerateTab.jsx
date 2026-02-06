@@ -14,7 +14,7 @@ export default function GenerateTab({
             <div className="flex flex-col md:flex-row gap-4 mb-8">
                 <input
                     type="url"
-                    placeholder="Enter Wikipedia URL (e.g., https://en.wikipedia.org/wiki/Alan_Turing)"
+                    placeholder="Enter Wikipedia URL"
                     value={url}
                     onChange={(e) => onUrlChange(e.target.value)}
                     className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent text-gray-900 placeholder-gray-500"
