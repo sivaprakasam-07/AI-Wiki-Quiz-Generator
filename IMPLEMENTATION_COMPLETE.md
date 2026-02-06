@@ -1,7 +1,7 @@
 # AI Wiki Quiz Generator - Implementation Complete ✅
 
 ## Overview
-All requested features have been successfully implemented for the AI Wiki Quiz Generator. The system uses FastAPI, React, MySQL, and Google Gemini AI to generate quizzes from Wikipedia articles.
+The system uses FastAPI, React, MySQL, and Google Gemini AI to generate quizzes from Wikipedia articles.
 
 ---
 

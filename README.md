@@ -1,62 +1,209 @@
 # AI Wiki Quiz Generator
 
 ## Overview
-This project provides a FastAPI backend and a React frontend that accept a Wikipedia URL, scrape the article HTML, and generate a structured quiz with an LLM. Results are stored in MySQL and available in a history tab.
+An AI-powered application that generates quizzes from Wikipedia articles using FastAPI, React, MySQL, and Google Gemini AI.
 
-## Requirements
+**Live Demo**: [https://ai-quiz07.web.app](https://ai-quiz07.web.app)
+
+## Features
+- Scrapes Wikipedia articles using BeautifulSoup
+- Generates multiple-choice quizzes with Google Gemini AI
+- Stores quiz history in MySQL database
+- Section-wise question grouping
+- Related topics suggestions
+
+---
+
+## 🚀 Quick Start (Local Development)
+
+### Prerequisites
 - Python 3.10+
 - Node.js 18+
-- MySQL 8+
+- MySQL 8+ (for local development)
+- PostgreSQL (auto-provisioned on Render for production)
 
-## Backend Setup
-1. Create a database named `wiki_quiz`.
-2. Copy [backend/.env.example](backend/.env.example) to `backend/.env` and update values.
-3. Install dependencies:
-   - `cd backend`
-   - `python -m venv .venv`
-   - `.venv\Scripts\activate`
-   - `pip install -r requirements.txt`
-4. Run the API:
-   - `uvicorn app.main:app --reload`
+### 1. Database Setup
 
-The API will be available at `http://localhost:8000`.
+**For Local Development (MySQL):**
+```sql
+CREATE DATABASE wiki_quiz;
+```
 
-## Frontend Setup
-1. Install dependencies:
-   - `cd frontend`
-   - `npm install`
-2. Start the dev server:
-   - `npm run dev`
+**For Production (PostgreSQL on Render):**
+- Database is auto-provisioned by Render
+- Connection string provided automatically as `DATABASE_URL`
 
-The UI will be available at `http://localhost:5173`.
+### 2. Backend Setup
+```bash
+cd backend
+python -m venv .venv
+.venv\Scripts\activate          # Windows
+pip install -r requirements.txt
+```
 
-## Environment Variables
-Backend `backend/.env`:
-- `DB_URL` - SQLAlchemy connection string.
-- `GEMINI_API_KEY` - Gemini API key (required for real LLM output).
-- `LLM_MODEL` - Model name, default `gemini-1.5-flash`.
-- `ALLOWED_ORIGINS` - Comma-separated list, default allows all.
+**For Local Development** - Create `backend/.env`:
+```env
+DATABASE_URL=mysql+pymysql://root:YOUR_PASSWORD@localhost:3306/wiki_quiz
+GEMINI_API_KEY=your_gemini_api_key_here
+LLM_MODEL=gemini-2.5-flash
+ALLOWED_ORIGINS=http://localhost:5173
+```
 
-Frontend `frontend/.env` (optional):
-- `VITE_API_BASE` - API base URL, default `http://localhost:8000`.
+**For Production (Render)** - Set in Render Dashboard:
+```env
+DATABASE_URL=postgresql://...  # Auto-provided by Render
+GEMINI_API_KEY=your_api_key
+GOOGLE_API_KEY=your_api_key
+ALLOWED_ORIGINS=https://ai-quiz07.web.app
+LLM_MODEL=gemini-2.5-flash
+```
 
-## API Endpoints
-- `POST /api/quizzes/generate` body: `{ "url": "https://en.wikipedia.org/wiki/Alan_Turing", "force": false }` (set `force` to true to regenerate)
-- `GET /api/quizzes`
-- `GET /api/quizzes/{id}`
+Run backend:
+```bash
+uvicorn app.main:app --reload
+```
+API available at: `http://localhost:8000`
 
-## Prompt Templates
-- Quiz prompt: [backend/app/prompts/quiz_prompt.txt](backend/app/prompts/quiz_prompt.txt)
-- Related topics prompt: [backend/app/prompts/related_topics_prompt.txt](backend/app/prompts/related_topics_prompt.txt)
+### 3. Frontend Setup
+```bash
+cd frontend
+npm install
+npm run dev
+```
+UI available at: `http://localhost:5173`
 
-## Sample Data
-See [sample_data/](sample_data/) for example URLs and JSON outputs.
+---
 
-## Screenshots
-Capture and add screenshots for:
-- Generate Quiz tab
-- Past Quizzes tab
-- Details modal
+## 🌐 Deployment
 
-## Notes
-- If `GEMINI_API_KEY` is not set, the backend returns a deterministic fallback quiz so the UI can be exercised.
+**Frontend (Firebase)**: [https://ai-quiz07.web.app](https://ai-quiz07.web.app)  
+**Backend (Render)**: [https://ai-wiki-quiz-generator-yici.onrender.com](https://ai-wiki-quiz-generator-yici.onrender.com)
+
+### Production Environment Variables
+Backend uses PostgreSQL on Render:
+- `DATABASE_URL` - PostgreSQL connection string (auto-provided by Render)
+- `GEMINI_API_KEY` - Google Gemini API key
+- `ALLOWED_ORIGINS` - `https://ai-quiz07.web.app`
+
+Frontend `.env`:
+- `VITE_API_BASE` - `https://ai-wiki-quiz-generator-yici.onrender.com`
+
+---
+
+## 📚 Environment Variables Reference
+
+### Backend (`backend/.env`)
+- **`DATABASE_URL`** - SQLAlchemy connection string  
+  Example: `mysql+pymysql://root:password@localhost:3306/wiki_quiz`
+- **`GEMINI_API_KEY`** - Google Gemini API key (required for quiz generation)
+- **`LLM_MODEL`** - Model name (default: `gemini-2.5-flash`)
+- **`ALLOWED_ORIGINS`** - Comma-separated CORS origins (default allows all)
+
+### Frontend (`frontend/.env`)
+- **`VITE_API_BASE`** - Backend API URL  
+  Local: `http://localhost:8000`  
+  Production: `https://ai-wiki-quiz-generator-yici.onrender.com`
+
+---
+
+## 🔌 API Endpoints
+
+**Base URL**: `http://localhost:8000` (local) or `https://ai-wiki-quiz-generator-yici.onrender.com` (production)
+
+### Generate Quiz
+```http
+POST /api/quizzes/generate
+Content-Type: application/json
+
+{
+  "url": "https://en.wikipedia.org/wiki/Albert_Einstein",
+  "force": false
+}
+```
+- `force: true` - Regenerate even if cached
+
+### Get All Quizzes
+```http
+GET /api/quizzes
+```
+
+### Get Quiz by ID
+```http
+GET /api/quizzes/{id}
+```
+
+### API Documentation
+Visit `http://localhost:8000/docs` for interactive Swagger UI
+
+---
+
+## 📁 Project Structure
+
+```
+Quiz-Gen/
+├── backend/
+│   ├── app/
+│   │   ├── main.py           # FastAPI application
+│   │   ├── models.py         # SQLAlchemy ORM models
+│   │   ├── schemas.py        # Pydantic schemas
+│   │   ├── scraper.py        # Wikipedia scraper
+│   │   ├── llm.py            # Gemini AI integration
+│   │   ├── crud.py           # Database operations
+│   │   ├── cache.py          # Caching system
+│   │   └── prompts/          # LLM prompt templates
+│   ├── requirements.txt
+│   └── .env
+├── frontend/
+│   ├── src/
+│   │   ├── App.jsx           # Main React component
+│   │   ├── components/       # React components
+│   │   └── styles.css
+│   ├── package.json
+│   └── .env
+└── README.md
+```
+
+---
+
+## 🧪 Testing the Application
+
+### Recommended Wikipedia URLs
+- [Albert Einstein](https://en.wikipedia.org/wiki/Albert_Einstein) - Fast loading
+- [Marie Curie](https://en.wikipedia.org/wiki/Marie_Curie) - Fast loading
+- [Alan Turing](https://en.wikipedia.org/wiki/Alan_Turing) - Medium size
+
+### Workflow
+1. Open frontend at `http://localhost:5173`
+2. Paste Wikipedia URL in "Generate Quiz" tab
+3. Click "Generate Quiz" (takes 10-30 seconds)
+4. View generated quiz with sections
+5. Click "Take Quiz" to test yourself
+6. Check "Past Quizzes" tab for history
+
+---
+
+## ⚙️ Technologies Used
+
+- **Backend**: FastAPI, SQLAlchemy, BeautifulSoup4, LangChain
+- **Frontend**: React 18, Vite
+- **Database**: 
+  - Local Development: MySQL 8+
+  - Production: PostgreSQL (Render)
+- **AI**: Google Gemini 2.5-flash
+- **Deployment**: Render (backend), Firebase Hosting (frontend)
+
+---
+
+## 📝 Notes
+
+- **Caching**: Duplicate URLs are cached for 60 minutes to avoid re-scraping
+- **Fallback**: If Gemini API fails, a deterministic quiz is returned
+- **Section Grouping**: Questions are organized by Wikipedia article sections
+- **Rate Limits**: Free Gemini API has daily quotas
+
+---
+
+## 🔗 Links
+
+- **GitHub Repository**: [AI-Wiki-Quiz-Generator](https://github.com/sivaprakasam-07/AI-Wiki-Quiz-Generator)
+- **Live Demo**: [https://ai-quiz07.web.app](https://ai-quiz07.web.app)
