@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import Header from "./components/Header";
 import Tabs from "./components/Tabs";
-import AlertMessage from "./components/AlertMessage";
 import GenerateTab from "./components/GenerateTab";
 import HistoryTab from "./components/HistoryTab";
 import QuizCard from "./components/QuizCard";
@@ -26,7 +26,6 @@ export default function App() {
     const [quiz, setQuiz] = useState(emptyQuiz);
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
     const [modalOpen, setModalOpen] = useState(false);
     const [detailQuiz, setDetailQuiz] = useState(emptyQuiz);
     const [takeMode, setTakeMode] = useState(false);
@@ -38,7 +37,7 @@ export default function App() {
             const data = await response.json();
             setHistory(data);
         } catch (err) {
-            setError(err.message);
+            toast.error(err.message);
         }
     };
 
@@ -47,9 +46,12 @@ export default function App() {
     }, []);
 
     const handleGenerate = async () => {
-        if (!url) return;
+        if (!url) {
+            toast.error("Please enter a Wikipedia URL");
+            return;
+        }
         setLoading(true);
-        setError("");
+        const loadingToast = toast.loading("Generating quiz...");
         try {
             const response = await fetch(`${API_BASE}/api/quizzes/generate`, {
                 method: "POST",
@@ -63,23 +65,24 @@ export default function App() {
             const data = await response.json();
             setQuiz(data);
             await fetchHistory();
+            toast.success(`Quiz generated for "${data.title}"!`, { id: loadingToast });
         } catch (err) {
-            setError(err.message);
+            toast.error(err.message, { id: loadingToast });
         } finally {
             setLoading(false);
         }
     };
 
     const openDetails = async (quizId) => {
-        setError("");
         try {
             const response = await fetch(`${API_BASE}/api/quizzes/${quizId}`);
             if (!response.ok) throw new Error("Failed to load quiz details.");
             const data = await response.json();
+            toast.success("Quiz details loaded!");
             setDetailQuiz(data);
             setModalOpen(true);
         } catch (err) {
-            setError(err.message);
+            toast.error(err.message);
         }
     };
 
@@ -91,7 +94,6 @@ export default function App() {
                 onToggleTakeMode={() => setTakeMode(!takeMode)}
             />
             <Tabs activeTab={activeTab} onTabChange={setActiveTab} />
-            <AlertMessage message={error} />
 
             {activeTab === "generate" ? (
                 <GenerateTab
