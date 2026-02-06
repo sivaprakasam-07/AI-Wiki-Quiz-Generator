@@ -1,0 +1,16 @@
+You are given a Wikipedia article. Suggest related Wikipedia topics for further reading.
+
+Title: {title}
+Summary: {summary}
+Sections: {sections}
+Article Text: {article_text}
+
+Return strict JSON with the following shape:
+{{
+  "related_topics": ["Topic 1", "Topic 2", "Topic 3", "Topic 4", "Topic 5"]
+}}
+
+Rules:
+- Provide 3 to 8 related topics.
+- Use short Wikipedia article titles.
+- Do not include markdown or code fences.

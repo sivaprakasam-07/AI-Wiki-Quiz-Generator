@@ -1,0 +1,42 @@
+You are an expert quiz designer. Generate a high-quality quiz grounded in the Wikipedia article content.
+
+Title: {title}
+Summary: {summary}
+Sections: {sections}
+Article Text: {article_text}
+
+CRITICAL INSTRUCTIONS:
+1. Generate 5-10 questions distributed across different sections
+2. Mix difficulty levels: easy (40%), medium (40%), hard (20%)
+3. Each question must be factually accurate and directly from the article content
+4. Include section names in explanations to help learners
+5. Vary question types: definition, factual recall, relationship, and reasoning
+6. Ensure options are plausible but distinct (no obviously wrong answers)
+7. Ground every question in specific article sentences or paragraphs
+
+Return strict JSON with the following shape:
+{{
+  "key_entities": {{
+    "people": ["..."],
+    "organizations": ["..."],
+    "locations": ["..."]
+  }},
+  "quiz": [
+    {{
+      "question": "...",
+      "options": ["A", "B", "C", "D"],
+      "answer": "...",
+      "difficulty": "easy|medium|hard",
+      "explanation": "...",
+      "section": "section_name"
+    }}
+  ]
+}}
+
+Rules:
+- Provide 5 to 10 quiz questions.
+- Each question must have exactly four options.
+- The correct answer must be one of the four options.
+- Explanations must cite article content or section explicitly.
+- Include which section each question relates to.
+- Do not include markdown or code fences in output.

@@ -1,0 +1,42 @@
+{
+    "id": 2,
+    "url": "https://en.wikipedia.org/wiki/Ada_Lovelace",
+    "title": "Ada Lovelace",
+    "summary": "Ada Lovelace was an English mathematician known for her notes on the Analytical Engine.",
+    "key_entities": {
+        "people": [
+            "Ada Lovelace",
+            "Charles Babbage"
+        ],
+        "organizations": [
+            "Royal Society"
+        ],
+        "locations": [
+            "England"
+        ]
+    },
+    "sections": [
+        "Early life",
+        "Work on the Analytical Engine",
+        "Legacy"
+    ],
+    "quiz": [
+        {
+            "question": "Who collaborated with Ada Lovelace on the Analytical Engine?",
+            "options": [
+                "Isaac Newton",
+                "Charles Babbage",
+                "Alan Turing",
+                "Grace Hopper"
+            ],
+            "answer": "Charles Babbage",
+            "difficulty": "easy",
+            "explanation": "Her notes were based on Babbage's Analytical Engine."
+        }
+    ],
+    "related_topics": [
+        "Analytical Engine",
+        "History of computing",
+        "Algorithm"
+    ]
+}
